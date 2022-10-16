@@ -34,7 +34,7 @@ class Generate_Data(object):
         here we define z and dz
         '''
         
-    def get_T(self,norm=1e-3,iter_max=80000):
+    def get_T_true(self,norm=1e-3,iter_max=80000):
         '''
         get true  information of T by using closed equation
         use finite difference method
@@ -54,7 +54,7 @@ class Generate_Data(object):
                 self.dz**2*(epsilon(T[1:self.num],rand)*\
                 (self.T_inf**4-T[1:self.num]**4)+self.h*(self.T_inf-T[1:self.num])))
         
-            T[1:self.num]=new
+            T[1:self.num]=0.5*new+0.5*T[1:self.num]
             L2=np.linalg.norm(T-T_old)
             iter+=1
         
@@ -63,7 +63,7 @@ class Generate_Data(object):
         '''
         
         
-        return T[1:-1:10]
+        return T[1:-1]
     def run(self):
         '''
         sample
