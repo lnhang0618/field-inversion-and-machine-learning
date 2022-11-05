@@ -20,9 +20,9 @@ class Solver(object):
         '''
         
         self.z=np.linspace(0,1,num+1)
-        self.dz=1/(num)
+        self.dz=self.z[1]-self.z[0]
     
-    def get_T_base(self,norm=1e-3,iter_max=80000):
+    def get_T_base(self,norm=1e-7,iter_max=80000):
  
         T=np.zeros(self.num+1)
         
@@ -38,7 +38,7 @@ class Solver(object):
                 self.dz**2*(5e-4)*\
                 (self.T_inf**4-T[1:self.num]**4))
         
-            T[1:self.num]=0.5*new+0.5*T[1:self.num]
+            T[1:self.num]=0.25*new+0.75*T[1:self.num]
             L2=np.linalg.norm(T-T_old)
             iter+=1
         
@@ -48,7 +48,7 @@ class Solver(object):
         
         return T[1:-1]
     
-    def get_T_beta(self,beta,norm=1e-3,iter_max=80000):
+    def get_T_beta(self,beta,norm=1e-5,iter_max=80000):
  
         T=np.zeros(self.num+1)
         
@@ -73,3 +73,21 @@ class Solver(object):
         '''
         
         return T[1:-1]
+    
+    def get_beta_r_true(self, T, with_rand=True):
+        if with_rand:
+            rand = np.random.normal(loc=0, scale=0.1, size=(T.shape))
+        else:
+            rand = 0
+        return (1/5e-4)*(1+5*np.sin(3*np.pi*T/200)+np.exp(0.02*T)+rand)*1e-4
+        
+        
+    def get_beta_c_true(self, T):
+        return self.h/5e-4*(self.T_inf-T)/(self.T_inf**4-T**4)
+    
+    def get_beta_true(self, T,with_rand=True):
+
+        
+        beta_r = self.get_beta_r_true(T,with_rand)
+        beta_c = self.get_beta_c_true(T)
+        return beta_r+beta_c

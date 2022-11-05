@@ -4,6 +4,7 @@
 Created on Oct 15 2022
 '''
 import numpy as np
+
 # import pandas as pd
 
 # epsilon depends on Temperature
@@ -18,6 +19,7 @@ class Generate_Data(object):
         self.num=num
         self.h=h
         self.T_inf=T_inf
+        self.z_obs = np.linspace(0, 1, num+1)
         '''
         here T_inf is temperature of surroundings and 
         
@@ -28,13 +30,13 @@ class Generate_Data(object):
         '''
         
         self.z=np.linspace(0,1,num+1)
-        self.dz=1/(num)
+        self.dz=self.z[1]-self.z[0]
         
         '''
         here we define z and dz
         '''
         
-    def get_T_true(self,norm=1e-3,iter_max=80000):
+    def get_T_true(self,norm=1e-7,iter_max=80000):
         '''
         get true  information of T by using closed equation
         use finite difference method
@@ -54,7 +56,8 @@ class Generate_Data(object):
                 self.dz**2*(epsilon(T[1:self.num],rand)*\
                 (self.T_inf**4-T[1:self.num]**4)+self.h*(self.T_inf-T[1:self.num])))
         
-            T[1:self.num]=0.5*new+0.5*T[1:self.num]
+            T[1:self.num]=0.25*new+0.75*T[1:self.num]
+            #T[1:self.num]=new
             L2=np.linalg.norm(T-T_old)
             iter+=1
         
@@ -64,17 +67,33 @@ class Generate_Data(object):
         
         
         return T[1:-1]
-    def run(self):
+    def run(self,C_m_type,times=100,scalar_noise=None):
         '''
-        sample
+        synthetic data 
+        solving 100 realizations
         '''
-        self.data=self.get_T()
-        self.C_m=np.cov(self.data,rowvar=False)
+        data=[]
+        for i in range(times):
+            tmp=self.get_T_true()
+            data.append(tmp)
+        self.T_true=np.vstack(data)
+        self.T_obs=np.mean(self.T_true,axis=0)
         
+        if C_m_type=='scalar':
+            self.C_m = np.diag(scalar_noise**2*np.ones((self.num-1,)))
+            
+        elif C_m_type=='vector':
+            vector_noise = np.std(self.T_true, axis=0)
+            #vector_noise = np.mean(np.std(self.T_true, axis=0))
+            self.C_m = np.diag(vector_noise**2)
+            print(self.C_m)    
+        
+        
+        elif C_m_type=='matrix':
+            self.C_m = np.cov(self.T_true, rowvar=False)
 
-'''
-T_INF = np.full(999,55.) 
-G=Generate_Data(1000,0.5,T_INF)
+'''      
+G=Generate_Data(30,0.5,50)
 G.run()
-print(G.data)
+print(G.C_m)
 '''
