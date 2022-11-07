@@ -91,7 +91,7 @@ ax3.set_xlabel(r'$z$')
 ax3.set_ylabel(r'$\sigma$')
 ax3.axis([0, 1, 1e-2, 1e0])
 f.tight_layout()
-f.savefig("./results/fig2(C_m=vector I)(2)_rep")
+#f.savefig("./results/fig2(C_m=vector I)(2)_rep")
 f.show()
 
 

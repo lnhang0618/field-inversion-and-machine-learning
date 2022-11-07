@@ -83,10 +83,9 @@ class Generate_Data(object):
             self.C_m = np.diag(scalar_noise**2*np.ones((self.num-1,)))
             
         elif C_m_type=='vector':
-            vector_noise = np.std(self.T_true, axis=0)
-            #vector_noise = np.mean(np.std(self.T_true, axis=0))
-            self.C_m = np.diag(vector_noise**2)
-            print(self.C_m)    
+            #vector_noise = np.std(self.T_true, axis=0)
+            vector_noise = np.mean(np.std(self.T_true, axis=0))
+            self.C_m = np.diag(vector_noise**2*np.ones((self.num-1,)))
         
         
         elif C_m_type=='matrix':

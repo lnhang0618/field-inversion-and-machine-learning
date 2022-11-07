@@ -64,7 +64,6 @@ class Optimization:
     def sample_posterior(self,N_samples):
         H=self.Objfn.compute_Hessian_adjoint_direct(self.beta_MAP)
         C_MAP=np.linalg.inv(H)
-        print(C_MAP)
         R=np.linalg.cholesky(C_MAP)
         
         sam_lst=[]
