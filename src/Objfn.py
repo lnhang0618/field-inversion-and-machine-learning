@@ -59,7 +59,12 @@ class Objfn:
         dJdTdT=(self.H_matirx).T\
             .dot(np.linalg.inv(self.data.C_m)).dot(self.H_matirx)
         return dJdTdT
-        
+    
+    def compute_dJdR(self,beta):
+        T=self.Solver.get_T_beta(beta)
+        dJdR=((self.H_matirx).dot(T)-self.data.T_obs).T.dot(np.linalg.inv(self.data.C_m))
+        return dJdR    
+    
     def compute_dJdbetadbeta(self):
         return self.prior.invcov          
     
@@ -88,7 +93,7 @@ class Objfn:
         
     #define adjoint equation
     def compute_psi(self,dRdT,dJdT):
-        psi=np.linalg.solve(dRdT.T,-dJdT)
+        psi=np.linalg.solve(dRdT.T,-dJdT.T)
         return psi
     
         
@@ -99,9 +104,11 @@ class Objfn:
         dJdbeta=self.compute_dJdbeta(beta)
         dRdT=self.compute_dRdT(beta)
         dJdT=self.compute_dJdT(beta)
+        #dJdR=self.compute_dJdR(beta)
         psi=self.compute_psi(dRdT,dJdT)
         
         G=dJdbeta+psi.T.dot(dRdbeta)
+        #G=dJdbeta+dJdR.dot(dRdbeta)
         return G
     
     def compute_Hessian_adjoint_adjoint(self, beta):

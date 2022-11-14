@@ -16,7 +16,7 @@ from Objfn import Objfn
 from Optimization import Optimization
 from Prior import Prior
 
-C_m_type = 'vector'
+C_m_type = 'matrix'
 
 N = 32
 h = 0.5
@@ -34,7 +34,7 @@ C_beta = np.diag(sigma_prior**2*np.ones((N-1,)))
 Solver = Solver(N,  h, T_inf)
 prior = Prior(beta_prior, C_beta)
 data = Generate_Data(M, h, T_inf_data)
-data.run(C_m_type=C_m_type,scalar_noise=0.03)
+data.run(C_m_type=C_m_type,scalar_noise=0.02)
 
 Objfn = Objfn(z, data, Solver, prior)
 
@@ -45,7 +45,7 @@ opt = Optimization(Solver, prior, data, Objfn, beta0, optimizer)
 
 opt.compute_MAP_properties()
 opt.compute_base_properties()
-opt.sample_posterior(int(1e6))
+opt.sample_posterior()
 opt.compute_true_properties()
 
 

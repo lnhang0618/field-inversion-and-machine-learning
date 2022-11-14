@@ -61,11 +61,14 @@ class Optimization:
     def compute_base_properties(self):
         self.T_base=self.Solver.get_T_base()
         
-    def sample_posterior(self,N_samples):
+    def sample_posterior(self):
         H=self.Objfn.compute_Hessian_adjoint_direct(self.beta_MAP)
         C_MAP=np.linalg.inv(H)
         R=np.linalg.cholesky(C_MAP)
-        
+        M=np.diag(C_MAP)
+        self.std=np.sqrt(M)
+    
+        '''
         sam_lst=[]
         for i in range(N_samples):
             s=np.random.randn(self.Solver.num-1)
@@ -73,3 +76,4 @@ class Optimization:
         
         samp=np.vstack(sam_lst)
         self.std=np.std(samp,axis=0)
+        '''

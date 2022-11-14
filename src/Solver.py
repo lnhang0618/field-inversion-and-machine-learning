@@ -48,7 +48,7 @@ class Solver(object):
         
         return T[1:-1]
     
-    def get_T_beta(self,beta,norm=1e-5,iter_max=80000):
+    def get_T_beta(self,beta,norm=1e-7,iter_max=80000):
  
         T=np.zeros(self.num+1)
         

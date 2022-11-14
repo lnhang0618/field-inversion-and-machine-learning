@@ -20,7 +20,7 @@ from Prior import Prior
 from Solver import Solver
 
 np.random.seed(100)
-C_m_type = "matrix"
+C_m_type = "scalar"
 N= 32
 h=0.5
 z=np.linspace(0,1,N+1)
@@ -50,7 +50,7 @@ ax2=f.add_subplot(132)
 ax3=f.add_subplot(133)
 
 
-for i,T_inf in enumerate(range(5,51,5)):
+for i,T_inf in enumerate(range(25,28,5)):
     print(T_inf)
     data=Generate_Data(M,h,T_inf)
     data.run(C_m_type,scalar_noise=0.02)
@@ -103,5 +103,5 @@ ax2.axis([0,50,1e-3,1e1])
 ax1.legend()
 ax2.legend()
 ax3.legend()
-f.savefig('./results/fig3(C_m=full)_rep')
+f.savefig('./results/fig3(C_m=scalar)(T_inf=25)_rep')
 f.show()
